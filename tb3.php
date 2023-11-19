@@ -26,23 +26,18 @@
         margin-right: auto;
     }
 
-    .tab_box .tab_btn {
-        color: black;
-        background-color: gray;
-        border: none;
-        padding: 4px;
-        cursor: pointer;
-        width: 100%;
+    .logo_league_tb3 {
+        width: 20px;
+        height: 15px;
+        padding: 3px;
+        padding-right: 1%;
     }
 
-    .content_box {
-        padding: 0px;
-        width: 100%;
-    }
-
-    .logo_team_img {
-        width: 30px;
-        height: 30px;
+    .logo_league_tb3_2 {
+        width: 20px;
+        height: 15px;
+        padding: 3px;
+        padding-right: 1%;
     }
 
     /*@media only screen and (max-width: 600px) {
@@ -76,17 +71,6 @@
         }
     }*/
 
-    .tab-content22 {
-        display: none;
-        width: 100%;
-    }
-
-    .active {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-
     table {
         margin-top: 10px;
         border-collapse: collapse;
@@ -105,7 +89,7 @@
     th,
     td {
         border: 1px solid black;
-        color: black;
+        color: white;
         font-size: 12px;
     }
 
@@ -135,16 +119,16 @@
         text-align: center;
     }
 
-    button {
-        margin-top: 0px;
-    }
-
     .leagueTable {
         background-color: black;
     }
 
     th {
         background-color: #232323 !important;
+    }
+
+    td {
+        background-color: black;
     }
 
     .tab-select {
@@ -177,6 +161,18 @@
         }
     }
 
+    .logo_league_tb3_ht{
+        width: 15px;
+        height: 15px;
+        padding-left: 5%;
+    }
+
+    .logo_league_tb3_at{
+        width: 15px;
+        height: 15px;
+        padding-right: 5%;
+    }
+
     </style>
     
     <body class="homesh">
@@ -197,32 +193,80 @@
                 $err = curl_error($curl);
                 curl_close($curl);
                 $data = json_decode($response, true);
-                //print_r($data['list_team']);
+                //print_r($data);
+                $count_data = count($data);
+                echo $count_data."<br>";
+                $stage_name = array();
+                $stage_name_1;
             ?>
             <div class="leagueRow">
                 <table>
                     <thead>
-                        <?php foreach ($data as $entry): ?>
-                            <tr>
-                                <th><img src="<?= $entry['flag'] ?>" class="logo_league_tb3"><?= $entry['tournament_stage_name'] ?></th>
-                            </tr>
+                        <?php for($i=0;$i<=$count_data-1;$i++){ 
+                            //$entry = $data;
+                            //$stage_name = $data[$i]['tournament_stage_name'];
+                            //$stage_name_exp = explode(" ",$stage_name);
+                            //echo $stage_name_exp[0]." -- <br>";
+                            if($i==0){
+                                $img_name = $data[$i]['flag'];
+                                $stage_name_1 = 0;
+                                $stage_name = $data[$i]['tournament_stage_name'];
+                                $stage_name_exp = explode(" ",$stage_name);
+                                if($stage_name != $stage_name_1){
+                                    echo $stage_name_1." !== ".$stage_name_exp[0]." |||--- ".$img_name."<br><br>";
+                                    ?>
+                                    <tr>
+                                        <th colspan="5" style="text-align: left; padding-left: 2%;">
+                                            <img src="<?= $data[$i]['flag'] ?>" class="logo_league_tb3">
+                                            <?= $data[$i]['tournament_template_name'] ?>
+                                            <?php echo "( ";?><?= $data[$i]['tournament_stage_name'] ?><?php echo " )";?>
+                                        </th>
+                                    </tr>
+                                    <?php
+                                }
+                            }else{
+                                $img_name = $data[$i]['flag'];
+
+                                $stage_name_1 = $data[$i-1]['tournament_stage_name'];
+                                $stage_name_1_exp = explode(" ",$stage_name_1);
+                                $stage_name = $data[$i]['tournament_stage_name'];
+                                $stage_name_exp = explode(" ",$stage_name);
+                                if($stage_name_exp[0] != $stage_name_1_exp[0]){
+                                    echo $stage_name_1_exp[0]." !== ".$stage_name_exp[0]." |||--- ".$img_name."<br><br>";
+                                    ?>
+                                    <tr>
+                                        <th colspan="5" style="text-align: left; padding-left: 2%;">
+                                            <img src="<?= $data[$i]['flag'] ?>" class="logo_league_tb3">
+                                            <?= $data[$i]['tournament_template_name'] ?>
+                                            <?php echo "( ";?><?= $data[$i]['tournament_stage_name'] ?><?php echo " )";?>
+                                        </th>
+                                    </tr>
+                                    <?php
+                                }
+                            }
+                        ?>
+                            
                         
                     </thead>
                     <tbody>
                             <tr>
-                                <td>
-                                    <div>
-                                        <?= $entry['starttime'] ?>
-                                        <?= $entry['participant_home_name'] ?>
-                                        <img src="<?= $entry['logohome'] ?>">
-                                        <?php echo "-";?>
-                                        <img src="<?= $entry['logoaway'] ?>">
-                                        <?= $entry['participant_away_name'] ?>
-                                        <?= $entry['hdp'] ?>
-                                    </div>
+                                <td style="width: 15%; padding-left: 15px; text-align: right;">
+                                    <span class="start-time"><?= $data[$i]['starttime'] ?></span>
+                                </td>
+                                <td style="width: 25%; padding-right: 20px; text-align: right;">
+                                    <?= $data[$i]['participant_home_name'] ?><img src="<?= $data[$i]['logohome'] ?>" class="logo_league_tb3_ht">
+                                </td>
+                                <td style="width: 25%;">
+                                    <?php echo "-";?>
+                                </td>
+                                <td style="width: 25%; padding-left: 20px; text-align: left;">
+                                    <img src="<?= $data[$i]['logoaway'] ?>" class="logo_league_tb3_at"><?= $data[$i]['participant_away_name'] ?>
+                                </td>
+                                <td style="width: 15%; padding-right: 25px; text-align: center;">
+                                    <?= $data[$i]['hdp'] ?>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
+                        <?php } ?>
                     </tbody>
                 </table>
 			</div>
